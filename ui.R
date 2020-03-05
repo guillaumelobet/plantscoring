@@ -31,7 +31,7 @@ dashboardPage(
                                htmlOutput("done")
                            )       
                         ),
-                        column(4,
+                        column(8,
                                h2("How many seminals do you see?"),
                            actionButton("button_1", "1"),
                            actionButton("button_2", "2"),
