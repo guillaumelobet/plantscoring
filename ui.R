@@ -8,8 +8,9 @@ dashboardPage(
     
     dashboardSidebar(
         sidebarMenu(
-            menuItem("Scoring", tabName = "scoring", icon = icon("dashboard")),
-            menuItem("Tables", tabName = "tables", icon = icon("th"))
+            menuItem("Seminal roots", tabName = "seminals", icon = icon("dashboard")),
+            menuItem("Tables", tabName = "tables", icon = icon("th")),
+            menuItem("Settings", tabName = "settings", icon = icon("cog"))
         )
     ),
     
@@ -18,12 +19,10 @@ dashboardPage(
     dashboardBody(
         tabItems(
             # First tab content
-            tabItem(tabName = "scoring",
+            tabItem(tabName = "seminals",
                     fluidRow(
                         column(4,
                            wellPanel(
-                               textInput("path", "Path to experimental folder", init_path),
-                               actionButton("update_path", "Update"),
                                 radioButtons("camera", "Choose camera", 
                                            c("A","B"), selected = c("A")),
                                selectInput("date", "Choose date", "wait"),
@@ -33,6 +32,7 @@ dashboardPage(
                            )       
                         ),
                         column(4,
+                               h2("How many seminals do you see?"),
                            actionButton("button_1", "1"),
                            actionButton("button_2", "2"),
                            actionButton("button_3", "3"),
@@ -49,13 +49,18 @@ dashboardPage(
             
             # Second tab content
             tabItem(tabName = "tables",
-
-                    selectInput("select_table", label = "Choose table", choices = c("results")),
+                    selectInput("select_table", label = "Choose table", choices = c("seminals")),
                     downloadButton("download_table_data", "Download"),
                     tags$hr(),
                     dataTableOutput("table_data")
-                    
-                    
+            ),
+            
+            # Second tab content
+            tabItem(tabName = "settings",
+                    textInput("path", "Path to experimental folder", init_path),
+                    actionButton("update_path", "Update"),
+                    tags$hr(),
+                    actionButton("create_database", "Create database")
             )
         )
     )

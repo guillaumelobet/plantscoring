@@ -17,6 +17,36 @@ shinyServer(function(input, output, clientData, session) {
   })  
   
   
+  
+  observeEvent(input$create_database, {
+    
+    tryCatch({
+      #--------------------------------------------------
+      # SETUP DATABASE
+      file.copy(from = paste0(rs$path, "/aeroscan/data/database.sql"), 
+                to = paste0(rs$path, "/aeroscan/data/database_",Sys.Date(),".sql"))
+      con <- dbConnect(RSQLite::SQLite(), paste0(rs$path, "/aeroscan/data/database.sql"))
+      #--------------------------------------------------
+      # RESULTS TABLE
+      seminals <- data.frame(Datetime = character(0), 
+                             Folder = character(0), 
+                             QR = character(0),
+                             seminal_number = numeric(0))
+      dbWriteTable(con, "seminals", seminals, overwrite = TRUE)
+      
+      showModal(modalDialog(
+        title = "Success",
+        "Database created"
+      ))
+    }, error=function(cond) {
+      showModal(modalDialog(
+        title = "Failure",
+        "Could not create database"
+      ))
+    })
+  })  
+  
+  
   # Load the data and update the input fields
   observe({
     req(rs$path)
@@ -46,21 +76,23 @@ shinyServer(function(input, output, clientData, session) {
     req(rs$data)
     req(rs$update)
     
-    con = dbcon(rs$path)
-    results <- dbReadTable(con, "seminals") %>% 
-      filter(as.character(Folder) %in% input$date)
-    dbDisconnect(con)
+    tryCatch({
+      con = dbcon(rs$path)
+      results <- dbReadTable(con, "seminals") %>% 
+        filter(as.character(Folder) %in% input$date)
+      dbDisconnect(con)
+      
+      rs$images <- rs$data %>% 
+        filter(as.character(Folder) %in% input$date) %>% 
+        filter(!QR %in% results$QR) %>% 
+        filter(camera %in% input$camera) %>% 
+        select(Filename, QR, Datetime) %>% 
+        group_by(QR) %>% 
+        distinct(QR, .keep_all = TRUE) %>% 
+        ungroup() 
     
-    rs$images <- rs$data %>% 
-      filter(as.character(Folder) %in% input$date) %>% 
-      filter(!QR %in% results$QR) %>% 
-      filter(camera %in% input$camera) %>% 
-      select(Filename, QR, Datetime) %>% 
-      group_by(QR) %>% 
-      distinct(QR, .keep_all = TRUE) %>% 
-      ungroup() 
-  
-    rs$image_left <- nrow(rs$images)
+      rs$image_left <- nrow(rs$images)
+    }, error=function(cond) {})
   })
   
   # Select one image to display
