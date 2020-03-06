@@ -9,7 +9,7 @@ library(formattable)
 init_path  <- "~/Desktop/test_clocl"
 
 dbcon <- function(path){
-  con <- dbConnect(RSQLite::SQLite(), paste0(path, "/aeroscan/data/database.sql"))
+  con <- dbConnect(RSQLite::SQLite(), paste0(path, "/Aeroscan/data/database.sql"))
   return(con)
 }
 

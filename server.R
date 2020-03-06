@@ -23,9 +23,9 @@ shinyServer(function(input, output, clientData, session) {
     tryCatch({
       #--------------------------------------------------
       # SETUP DATABASE
-      file.copy(from = paste0(rs$path, "/aeroscan/data/database.sql"), 
-                to = paste0(rs$path, "/aeroscan/data/database_",Sys.Date(),".sql"))
-      con <- dbConnect(RSQLite::SQLite(), paste0(rs$path, "/aeroscan/data/database.sql"))
+      file.copy(from = paste0(rs$path, "/Aeroscan/data/database.sql"), 
+                to = paste0(rs$path, "/Aeroscan/data/database_",Sys.Date(),".sql"))
+      con <- dbConnect(RSQLite::SQLite(), paste0(rs$path, "/Aeroscan/data/database.sql"))
       #--------------------------------------------------
       # RESULTS TABLE
       seminals <- data.frame(Datetime = character(0), 
@@ -54,11 +54,11 @@ shinyServer(function(input, output, clientData, session) {
     # load the entry files
     # data <- read_tsv(paste0(init_path, "/aeroscan/data/EntryFile_A.txt")) %>% mutate(Datetime = as.character(Datetime))
     tryCatch({
-      data1 <- read_tsv(paste0(rs$path, "/aeroscan/data/EntryFile_A.txt")) %>% 
+      data1 <- read_tsv(paste0(rs$path, "/Aeroscan/data/EntryFile_A.txt")) %>% 
         mutate(Datetime = as.character(Datetime)) %>% 
         mutate(camera = "A")
       
-      data2 <- read_tsv(paste0(rs$path, "/aeroscan/data/EntryFile_B.txt")) %>% 
+      data2 <- read_tsv(paste0(rs$path, "/Aeroscan/data/EntryFile_B.txt")) %>% 
         mutate(Datetime = as.character(Datetime)) %>% 
         mutate(camera = "B")
       
@@ -145,11 +145,11 @@ shinyServer(function(input, output, clientData, session) {
       filter(Filename == rs$current_image$Filename) %>% 
       slice(1)
     
-    if(temp$camera == "A") cam <- "camera1"
-    else cam <- "camera2"
+    if(temp$camera == "A") cam <- "Camera 1"
+    else cam <- "Camera 2"
     
     filename <- normalizePath(file.path(rs$path,
-                                        "images",
+                                        "Images",
                                         cam,
                                         temp$Folder, 
                                         temp$Filename))
