@@ -279,6 +279,24 @@ shinyServer(function(input, output, clientData, session) {
     rs$update <- -rs$update
   })
   
+  observeEvent(input$button_next, {
+    req(rs$current_image)
+    temp <- rs$data %>% 
+      filter(Filename == rs$current_image$Filename) %>% 
+      slice(1)
+    
+    temp2 <- data.frame(Datetime = temp$Datetime,
+                        Folder = as.character(temp$Folder),
+                        QR = temp$QR,
+                        seminal_number = -1)
+    con = dbcon(rs$path) 
+    dbWriteTable(con, "seminals", temp2, append = TRUE)   
+    dbDisconnect(con)
+    rs$current_image <- NULL
+    rs$update <- -rs$update
+  })
+  
+  
   
 })
 

@@ -39,6 +39,7 @@ dashboardPage(
                            actionButton("button_4", "4"),
                            actionButton("button_5", "5"),
                            actionButton("button_6", "6"),
+                           actionButton("button_next", "> Next"),
                            tags$hr(),
                            htmlOutput("img_title"),
                            imageOutput("myImage", width="100%"),   
